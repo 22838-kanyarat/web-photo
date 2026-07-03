@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบแสดงแผนภาพภูมิภาคประเทศไทย</title>
+    <title>ระบบแสดงแผนภาพสัตว์เลี้ยงที่ฉันชอบ</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght=300;400;500;600;700&display=swap');
 
         * {
             box-sizing: border-box;
@@ -15,7 +15,7 @@
         }
 
         body {
-            background-color: #f8fafc;
+            background-color: #fff7ed; /* เปลี่ยนเป็นโทนอุ่นนุ่มนวล */
             color: #1e293b;
             padding: 40px 20px;
             display: flex;
@@ -31,13 +31,13 @@
 
         header h1 {
             font-size: 2.2rem;
-            color: #0f172a;
+            color: #7c2d12;
             margin-bottom: 8px;
             font-weight: 700;
         }
 
         header p {
-            color: #64748b;
+            color: #9a3412;
             font-size: 1.1rem;
         }
 
@@ -51,48 +51,44 @@
             background: #ffffff;
             padding: 30px;
             border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
-            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(124, 45, 18, 0.05);
+            border: 1px solid #fed7aa;
         }
 
-        /* ฝั่งซ้าย: แผนภาพ SVG */
+        /* ฝั่งซ้าย: แผนภาพเลือกสัตว์เลี้ยง */
         .map-wrapper {
-            background-color: #f1f5f9;
+            background-color: #fffaf5;
             border-radius: 16px;
             padding: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #ffedd5;
         }
 
-        .thailand-map {
+        .pet-selector-svg {
             width: 100%;
             max-width: 360px;
             height: auto;
         }
 
-        /* เอฟเฟกต์ปฏิสัมพันธ์เมื่อชี้เมาส์ (Interactive Areas) */
-        .map-region {
+        /* เอฟเฟกต์ปฏิสัมพันธ์เมื่อชี้เมาส์ */
+        .pet-zone {
             cursor: pointer;
             transition: all 0.25s ease;
             stroke: #ffffff;
-            stroke-width: 3;
-            stroke-linejoin: round;
+            stroke-width: 4;
         }
 
-        .map-region:hover {
-            fill-opacity: 0.85;
-            filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.12));
+        .pet-zone:hover {
+            fill-opacity: 0.9;
+            filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.1));
         }
 
-        /* โทนสีประจำภูมิภาค */
-        #region-n { fill: #3b82f6; } /* เหนือ - ฟ้า */
-        #region-ne { fill: #f97316; } /* อีสาน - ส้ม */
-        #region-c { fill: #10b981; } /* กลาง - เขียว */
-        #region-e { fill: #eab308; } /* ตะวันออก - เหลือง */
-        #region-w { fill: #8b5cf6; } /* ตะวันตก - ม่วง */
-        #region-s { fill: #ef4444; } /* ใต้ - แดง */
+        /* โทนสีประจำสัตว์เลี้ยง */
+        #pet-dog { fill: #3b82f6; } /* หมา - ฟ้าสดใส */
+        #pet-cat { fill: #f97316; } /* แมว - ส้มขี้เล่น */
+        #pet-pig { fill: #ec4899; } /* หมู - ชมพูน่ารัก */
 
         /* ฝั่งขวา: การ์ดแสดงผลข้อมูลและรูปภาพ */
         .display-wrapper {
@@ -112,8 +108,8 @@
         }
 
         .panel-active {
-            border-color: #3b82f6;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+            border-color: #f97316;
+            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.1);
         }
 
         .region-title {
@@ -133,7 +129,7 @@
             flex-grow: 1;
         }
 
-        /* พื้นที่จองสำหรับบล็อกรูปภาพ (Image Container) */
+        /* พื้นที่จองสำหรับบล็อกรูปภาพ */
         .image-viewport {
             width: 100%;
             height: 240px;
@@ -156,7 +152,7 @@
             display: block;
         }
 
-        /* Responsive Layout สำหรับแท็บเล็ตและมือถือ */
+        /* Responsive Layout */
         @media (max-width: 768px) {
             .dashboard-container {
                 grid-template-columns: 1fr;
@@ -171,43 +167,34 @@
 <body>
 
     <header>
-        <h1>แผนภาพแสดงข้อมูลภูมิภาคประเทศไทย</h1>
-        <p>เลือกคลิกภูมิภาคบนแผนที่เพื่อเรียกดูระบบสารสนเทศและรูปภาพประจำถิ่น</p>
+        <h1>สัตว์เลี้ยงแสนรักของฉัน 🐶🐱🐷</h1>
+        <p>คลิกเลือกสัตว์เลี้ยงในแผนภาพฝั่งซ้าย เพื่อดูข้อมูลและรูปภาพของพวกมัน</p>
     </header>
 
     <div class="dashboard-container">
         
         <div class="map-wrapper">
-            <svg class="thailand-map" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
-                <path id="region-n" class="map-region" d="M 120 40 L 240 40 L 260 140 L 190 200 L 110 150 Z" onclick="updateDisplay('north')"/>
-                <text x="170" y="100" fill="white" font-weight="600" pointer-events="none">ภาคเหนือ</text>
+            <svg class="pet-selector-svg" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+                <circle id="pet-dog" class="pet-zone" cx="200" cy="110" r="80" onclick="updateDisplay('dog')"/>
+                <text x="200" y="115" fill="white" font-weight="600" font-size="18" text-anchor="middle" pointer-events="none">สุนัข (Dog)</text>
 
-                <path id="region-ne" class="map-region" d="M 241 145 L 380 140 L 370 300 L 240 280 L 210 200 Z" onclick="updateDisplay('northeast')"/>
-                <text x="270" y="210" fill="white" font-weight="600" pointer-events="none">ภาคอีสาน</text>
+                <circle id="pet-cat" class="pet-zone" cx="110" cy="320" r="80" onclick="updateDisplay('cat')"/>
+                <text x="110" y="325" fill="white" font-weight="600" font-size="18" text-anchor="middle" pointer-events="none">แมว (Cat)</text>
 
-                <path id="region-c" class="map-region" d="M 160 205 L 235 205 L 235 320 L 170 320 L 150 250 Z" onclick="updateDisplay('central')"/>
-                <text x="175" y="265" fill="white" font-weight="600" pointer-events="none">ภาคกลาง</text>
-
-                <path id="region-w" class="map-region" d="M 105 160 L 155 210 L 145 260 L 165 330 L 120 330 L 110 240 Z" onclick="updateDisplay('west')"/>
-                <text x="105" y="280" fill="white" font-weight="600" pointer-events="none">ภาคตะวันตก</text>
-
-                <path id="region-e" class="map-region" d="M 238 290 L 300 300 L 280 370 L 220 340 Z" onclick="updateDisplay('east')"/>
-                <text x="235" y="335" fill="white" font-weight="600" pointer-events="none">ภาคตะวันออก</text>
-
-                <path id="region-s" class="map-region" d="M 135 335 L 175 335 L 160 450 L 210 520 L 170 580 L 120 440 Z" onclick="updateDisplay('south')"/>
-                <text x="140" y="450" fill="white" font-weight="600" pointer-events="none">ภาคใต้</text>
+                <circle id="pet-pig" class="pet-zone" cx="290" cy="320" r="80" onclick="updateDisplay('pig')"/>
+                <text x="290" y="325" fill="white" font-weight="600" font-size="18" text-anchor="middle" pointer-events="none">หมู (Pig)</text>
             </svg>
         </div>
 
         <div class="display-wrapper">
             <div id="infoPanel" class="info-panel">
-                <h2 id="regionTitle" class="region-title">ยินดีต้อนรับ</h2>
+                <h2 id="regionTitle" class="region-title">ยินดีต้อนรับสู่บ้านสัตว์เลี้ยง</h2>
                 <div id="regionDesc" class="region-desc">
-                    กรุณาเลือกกดที่พื้นที่บนแผนที่จำลองประเทศไทยฝั่งซ้ายมือ เพื่อแสดงข้อมูลรายละเอียดโครงสร้างทางภูมิศาสตร์ วัฒนธรรม และรูปภาพประกอบของภาคนั้นๆ
+                    กรุณากดเลือกสัตว์เลี้ยงที่คุณสนใจจากแผนภาพทางซ้ายมือ เพื่อดูข้อมูลพฤติกรรม นิสัยใจคอ และรูปภาพความน่ารักของพวกมันกันเลย!
                 </div>
                 
                 <div class="image-viewport" id="imageArea">
-                    <span>รอการเชื่อมต่อรูปภาพภูมิภาค</span>
+                    <span>รอการเลือกสัตว์เลี้ยงเพื่อแสดงรูปภาพ</span>
                 </div>
             </div>
         </div>
@@ -215,37 +202,22 @@
     </div>
 
     <script>
-        // คลังข้อมูลภูมิภาคและจุดตั้งค่ารูปภาพ
+        // คลังข้อมูลสัตว์เลี้ยง
         const database = {
-            north: {
-                title: "ภาคเหนือ",
-                desc: "ภูมิประเทศส่วนใหญ่ประกอบไปด้วยเทือกเขาสลับซับซ้อน เป็นแหล่งกำเนิดของแม่น้ำสายสำคัญ มีวัฒนธรรม ขนบธรรมเนียมล้านนาที่เป็นเอกลักษณ์เฉพาะตัว รวมถึงสถานที่ท่องเที่ยวตามดอยสูงต่างๆ",
-                imageSrc: "" // <-- สามารถนำลิงก์หรือชื่อไฟล์รูปภาพภาคเหนือมาใส่ในเครื่องหมายคำพูดนี้ได้เลย เช่น "north.jpg"
+            dog: {
+                title: "สุนัข (Dog) 🐶",
+                desc: "เพื่อนแท้ที่ซื่อสัตย์ที่สุดของมนุษย์ มีนิสัยร่าเริง ฉลาด แสนรู้ และชอบเข้าสังคม สุนัขสามารถรับรู้ความรู้สึกของเจ้าของได้เป็นอย่างดี แถมยังชอบทำกิจกรรมกลางแจ้ง เดินเล่น และวิ่งคาบบอลเป็นที่สุด",
+                imageSrc: "" // <-- นำลิงก์รูปภาพสุนัขมาใส่ตรงนี้ได้เลย เช่น "https://example.com/dog.jpg"
             },
-            northeast: {
-                title: "ภาคตะวันออกเฉียงเหนือ",
-                desc: "หรือพื้นที่สะท้อนอารยธรรม 'อีสาน' เป็นที่ราบสูงขนาดใหญ่ที่เปี่ยมไปด้วยประวัติศาสตร์ทางธรณีวิทยา แหล่งโบราณคดี เทศกาลประเพณีทางศาสนาที่ยิ่งใหญ่ และอาหารท้องถิ่นรสชาติจัดจ้าน",
-                imageSrc: "" // <-- ตัวอย่าง: "images/isan.png"
+            cat: {
+                title: "แมว (Cat) 🐱",
+                desc: "เจ้านายตัวน้อยที่มีนิสัยรักอิสระและมีความเป็นตัวเองสูง บางเวลาก็ดูลึกลับน่าค้นหา แต่บางเวลาก็ขี้อ้อนจนใจละลาย ชอบนอนหลับในที่อุ่นๆ นั่งส่องนกริมหน้าต่าง และส่งเสียงครางเครือ (Purr) เวลาที่มีความสุข",
+                imageSrc: "" // <-- นำลิงก์รูปภาพแมวมาใส่ตรงนี้ได้เลย
             },
-            central: {
-                title: "ภาคกลาง",
-                desc: "พื้นที่ราบลุ่มแม่น้ำขนาดใหญ่ที่เป็นศูนย์กลางทางเศรษฐกิจ ประวัติศาสตร์ และการปกครองของประเทศ เป็นแหล่งเกษตรกรรมและอู่ข้าวอู่น้ำที่สำคัญหลักของประเทศไทย",
-                imageSrc: ""
-            },
-            east: {
-                title: "ภาคตะวันออก",
-                desc: "ภูมิภาคที่มีพื้นที่ติดชายฝั่งทะเลอ่าวไทย มีความโดดเด่นทั้งในด้านอุตสาหกรรมหลักของประเทศ แหล่งท่องเที่ยวทางทะเลที่ได้รับความนิยมระดับสากล และสวนผลไม้เมืองร้อนนานาชนิด",
-                imageSrc: ""
-            },
-            west: {
-                title: "ภาคตะวันตก",
-                desc: "เขตแนวกั้นทางภูมิศาสตร์ที่เต็มไปด้วยเทือกเขาสูงชันและผืนป่าตะวันตกอันอุดมสมบูรณ์ โดดเด่นด้วยกิจกรรมท่องเที่ยวเชิงอนุรักษ์ธรรมชาติ เขื่อนขนาดใหญ่ และสถานที่ทางประวัติศาสตร์",
-                imageSrc: ""
-            },
-            south: {
-                title: "ภาคใต้",
-                desc: "คาบสมุทรขนาบด้วยฝั่งทะเลอ่าวไทยและอันดามัน มีทัศนียภาพหมู่เกาะและชายหาดที่สวยงามระดับโลก วัฒนธรรมมีเอกลักษณ์เฉพาะตัวทั้งด้านดนตรี ภาษา และอาหารรสเผ็ดร้อน",
-                imageSrc: ""
+            pig: {
+                title: "หมู (Pig) 🐷",
+                desc: "สัตว์เลี้ยงทางเลือกใหม่ที่พกพาความน่ารักมาเต็มเปี่ยม! หมูเป็นสัตว์ที่ฉลาดและสะอาดกว่าที่หลายคนคิด (พวกมันแยกที่นอนและที่ขับถ่ายชัดเจน) มีนิสัยรักสงบ อ่อนโยน และที่สำคัญคือเห็นแก่กินเป็นที่สุด!",
+                imageSrc: "" // <-- นำลิงก์รูปภาพหมูมาใส่ตรงนี้ได้เลย
             }
         };
 
@@ -261,10 +233,8 @@
             
             // ระบบตรวจสอบและสลับการแสดงผลรูปภาพอัตโนมัติ
             if (data.imageSrc && data.imageSrc !== "") {
-                // หากคุณใส่ชื่อไฟล์หรือ URL รูปภาพในฐานข้อมูลด้านบน ระบบจะดึงรูปภาพมาแสดงทันที
-                imageArea.innerHTML = `<img src="${data.imageSrc}" alt="รูปภาพประกอบ${data.title}">`;
+                imageArea.innerHTML = `<img src="${data.imageSrc}" alt="รูปภาพของ${data.title}">`;
             } else {
-                // หากยังไม่ได้ใส่รูปภาพ ระบบจะขึ้นข้อความแจ้งเตือนสีสันตามภาคเพื่อความสวยงาม
                 imageArea.innerHTML = `<span>📷 [พื้นที่แสดงรูปภาพของ ${data.title}]</span>`;
             }
 
